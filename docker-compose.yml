@@ -1,0 +1,40 @@
+version: '2'
+
+volumes:
+  nextcloud:
+  db:
+
+services:
+  db:
+    image: hypriot/rpi-mysql
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=thisisasimplepswd
+    env_file:
+      - db.env
+  app:
+    image: nextcloud
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    env_file:
+     - db.env
+    environment:
+     - MYSQL_HOST=db
+    volumes:
+      - nextcloud:/var/www/html
+    restart: always
+
+  server:
+    image: elswork/arm-caddy
+    container_name: caddy
+    restart: always
+    ports:
+       - "80:80"
+       - "443:443"
+    volumes:
+      - "$HOME/Caddyfile:/etc/Caddyfile"
+      - "$HOME/.caddy:/root/.caddy"

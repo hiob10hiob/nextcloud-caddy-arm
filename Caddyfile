@@ -1,0 +1,5 @@
+subdomain.domain.tld {
+        proxy / xxx.xxx.xxx.xxx:8080 {
+                transparent
+        }
+}
